@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.itcast.travel.mapper.RouteMapper">
+
+
+    <resultMap id="BaseRoute" type="route">
+        <id property="rid" column="rid"></id>
+        <result property="rname" column="rname"></result>
+        <result property="price" column="price"></result>
+        <result property="routeIntroduce" column="routeIntroduce"></result>
+        <result property="rflag" column="rflag"></result>
+        <result property="rdate" column="rdate"></result>
+        <result property="isThemeTour" column="isThemeTour"></result>
+        <result property="count" column="count"></result>
+        <result property="cid" column="cid"></result>
+        <result property="rimage" column="rimage"></result>
+        <result property="sid" column="sid"></result>
+        <result property="sourceId" column="sourceId"></result>
+
+        <association property="category" column="cid" javaType="category"
+                     select="cn.itcast.travel.mapper.CategoryMapper.findCategoryByCid"/>
+        <association property="seller" column="sid" javaType="seller"
+                     select="cn.itcast.travel.mapper.SellerMapper.findSellerBySid" />
+        <collection property="routeImgList" column="rid"  ofType="routeImg"
+                    select="cn.itcast.travel.mapper.RouteImgMapper.findRouteImgByRid" />
+    </resultMap>
+
+
+    <select id="findMostFavoriteRoutesByCid" parameterType="int" resultMap="BaseRoute">
+        select * from tab_route where cid = #{cid} order by count limit  0 ,6
+    </select>
+
+    <select id="findAllRoutesByPage" parameterType="int" resultType="route">
+        select * from tab_route where cid = #{cid}
+    </select>
+
+    <select id="findAllRoutesByCid" resultMap="BaseRoute">
+        select * from tab_route where cid = #{cid} and rname like #{rname}
+    </select>
+
+    <select id="findRouteById" resultMap="BaseRoute" parameterType="int">
+      select * from tab_route where rid = #{rid}
+    </select>
+
+    <update id="updateRouteFavoriteNum" parameterType="int">
+        update tab_route set count = count + 1 where rid = #{rid}
+    </update>
+
+    <select id="findRouteRank" resultMap="BaseRoute">
+      select * from tab_route order by count desc
+    </select>
+
+    <select id="findRouteRankByCondition" resultMap="BaseRoute">
+        select * from tab_route
+        <where>
+            <if test="rname != null and rname != ''">
+                and rname like '%${rname}%'
+            </if>
+            <if test="startPrice != null  and startPrice != ''">
+                and price >= #{startPrice}
+            </if>
+            <if test="endPrice != null and endPrice != ''">
+                and price &lt;= #{endPrice}
+            </if>
+        </where>
+        order by count desc
+    </select>
+
+</mapper>

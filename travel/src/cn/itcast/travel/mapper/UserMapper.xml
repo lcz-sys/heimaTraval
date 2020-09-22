@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.itcast.travel.mapper.UserMapper">
+
+    <select id="findUserByUsername" resultType="user" parameterType="string">
+        select * from tab_user where username = #{username}
+    </select>
+
+    <insert id="saveUser" parameterType="user">
+        insert into tab_user(username,
+        password,
+        name,
+        birthday,
+        sex,
+        telephone,
+        email
+        ) values(
+        #{username},
+        #{password},
+        #{name},
+        #{birthday},
+        #{sex},
+        #{telephone},
+        #{email}
+        );
+    </insert>
+
+    <select id="findUserByUsernameAndPassword" resultType="user" parameterType="user">
+        select * from tab_user where username = #{username} and password = #{password}
+    </select>
+
+    <select id="findUserByUid" resultType="user" parameterType="int">
+        select * from tab_user where uid = #{uid}
+    </select>
+</mapper>

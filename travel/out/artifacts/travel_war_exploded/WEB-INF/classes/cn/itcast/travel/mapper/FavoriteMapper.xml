@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.itcast.travel.mapper.FavoriteMapper">
+
+    <select id="findFavoriteByUidAndRid" resultType="favorite">
+        select * from tab_favorite where uid = #{uid} and rid = #{rid}
+    </select>
+
+    <insert id="addFavorite" parameterType="favorite">
+        insert into tab_favorite(rid,date,uid) values(#{route.rid},#{date},#{user.uid})
+    </insert>
+
+    <resultMap id="BaseFavorite" type="favorite">
+        <result property="date" column="date" />
+        <association property="route"  column="rid" select="cn.itcast.travel.mapper.RouteMapper.findRouteById" />
+        <association property="user"  column="uid" select="cn.itcast.travel.mapper.UserMapper.findUserByUid" />
+    </resultMap>
+    <select id="findAllFavoriteByUid" parameterType="int" resultMap="BaseFavorite">
+        select * from tab_favorite where uid = #{uid}
+    </select>
+
+
+</mapper>
